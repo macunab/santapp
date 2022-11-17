@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 interface Player {
   name: string;
@@ -19,6 +20,7 @@ interface Lottery {
 export class LotteryComponent implements OnInit {
 
   lotteryForm: FormGroup;
+  loading: boolean = false;
 
   constructor(private fb:FormBuilder) { 
     this.lotteryForm = this.fb.group({
@@ -51,14 +53,20 @@ export class LotteryComponent implements OnInit {
   }
 
   onSave() {
-
-    if(this.lotteryForm.invalid) {
+    
+    if(this.lotteryForm.invalid || this.players.length < 2) {
       console.log('the form is invalid');
+      if(this.players.length < 2){
+        Swal.fire({
+          title: 'Please add at least 2 players',
+          icon: 'error'
+        })
+      }
       return;
     }
 
     const lottery: Lottery = this.lotteryForm.value;
-    console.log(lottery);
+    console.log(lottery.players);
   }
 
 }

@@ -4,12 +4,20 @@
     [formGroup]="lotteryForm"
     (ngSubmit)="onSave()">
 
-    <div class="field">
-        <label for="title" class="block">Title</label>
-        <input id="title" type="text" aria-describedby="title-help"
-            pInputText formControlName="title">
-        <small *ngIf="lotteryForm.get('title')?.errors?.['required'] && lotteryForm.dirty" id="title-help"
-            class="p-error block">The title is required</small>    
+    <div class="grid p-fluid">
+        <div class="col-7">
+            <div class="field">
+                <label for="title" class="block">Title</label>
+                <input id="title" type="text" aria-describedby="title-help"
+                    pInputText formControlName="title">
+                <small *ngIf="lotteryForm.get('title')?.errors?.['required'] && lotteryForm.dirty" id="title-help"
+                    class="p-error block">The title is required</small>    
+            </div>
+        </div>
+        <div class="col-5 flex align-content-center">
+            <p-button label="New Player" styleClass="p-button-success"
+                class="mt-2 flex align-items-center justify-content-center" (onClick)="addPlayer()"></p-button>
+        </div>
     </div>
 
     <ng-container formArrayName="players">
@@ -41,11 +49,14 @@
                             class="p-error block">Must be a valid email</small>
                     </div>
                 </div>
-                <div class="col-12 md:col-4">
-                    <button>Eliminar</button>
+                <div class="col-12 md:col-4 flex align-content-center">
+                        <p-button pRipple styleClass="p-button-warning p-button-rounded p-button-outlined" 
+                        class="mt-2 flex align-items-center justify-content-center" icon="pi pi-trash" (onClick)="onDeletePlayer(i)"></p-button>
                 </div>
             </div>
         </ng-container>
     </ng-container>
+
+    <p-button label="Create" styleClass="p-button-primary" type="submit" [disabled]="lotteryForm.invalid"></p-button>
 
 </form>
