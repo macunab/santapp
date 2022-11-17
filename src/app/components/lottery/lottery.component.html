@@ -1,5 +1,51 @@
 <h2>Ingrese los datos de los participantes</h2>
 <p-divider></p-divider>
-<form>
+<form autocomplete="off"
+    [formGroup]="lotteryForm"
+    (ngSubmit)="onSave()">
+
+    <div class="field">
+        <label for="title" class="block">Title</label>
+        <input id="title" type="text" aria-describedby="title-help"
+            pInputText formControlName="title">
+        <small *ngIf="lotteryForm.get('title')?.errors?.['required'] && lotteryForm.dirty" id="title-help"
+            class="p-error block">The title is required</small>    
+    </div>
+
+    <ng-container formArrayName="players">
+        <ng-container *ngFor="let p of players.controls; let i = index"
+            [formGroupName]="i">
+            <p-divider></p-divider>
+            <div class="grid p-fluid">
+                <div class="col-12 md:col-4">
+                    <div class="field">
+                        <label for="name" class="block">Name</label>
+                        <input id="name" type="text" aria-describedby="name-help"
+                            pInputText formControlName="name">
+                        <small *ngIf="p.get('name')?.errors?.['required'] && p.dirty" id="name-help"
+                            class="p-error block">The name is required</small>
+                        <small *ngIf="p.get('name')?.errors?.['minlength'] && p.dirty" id="name-help"
+                            class="p-error block">The name must be atleast {{
+                                p.get('name')?.errors?.['minlength'].requiredLength
+                                }} characters.</small>       
+                    </div>
+                </div>
+                <div class="col-12 md:col-4">
+                    <div class="field">
+                        <label for="email" class="block">Email</label>
+                        <input id="email" type="email" aria-describedby="email-help"
+                            pInputText formControlName="email">
+                        <small *ngIf="p.get('email')?.errors?.['required'] && p.dirty" id="email-help"
+                            class="p-error block">The email is required</small>
+                        <small *ngIf="p.get('email')?.errors?.['email'] && p.dirty" id="email-help"
+                            class="p-error block">Must be a valid email</small>
+                    </div>
+                </div>
+                <div class="col-12 md:col-4">
+                    <button>Eliminar</button>
+                </div>
+            </div>
+        </ng-container>
+    </ng-container>
 
 </form>
