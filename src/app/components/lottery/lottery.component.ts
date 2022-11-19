@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import './../../../assets/js/smtp.js'
+declare let Email: any;
 
 interface Player {
   name: string;
@@ -13,7 +14,10 @@ interface Lottery {
   players: Array<Player>;
 }
 
-declare let Email: any;
+interface LotteryResult {
+  santa: Player;
+  name: string;
+}
 
 @Component({
   selector: 'app-lottery',
@@ -85,6 +89,7 @@ export class LotteryComponent implements OnInit {
   */
   sendEmails(lottery: Lottery): void {
     let playersTemp: Array<Player> = lottery.players;
+    let secretResult: Array<LotteryResult> = [];
     let index: number;
     console.log(playersTemp);
     for(var player of lottery.players) {
@@ -92,9 +97,19 @@ export class LotteryComponent implements OnInit {
         index = Math.floor(Math.random() * (playersTemp.length));
         console.log(`El index generado es: ${ index }`)
       } while (playersTemp[index].email === player.email);
-      console.log(`${player.email} le toco ${playersTemp[index].email}`);
+      const santa: LotteryResult = { santa: player, name: playersTemp[index].name }
+      secretResult.push(santa);
       
     }
+    Email.send({
+      SecureToken: "7e8b1e24-50a7-417e-a2d5-bcf702f6a164",
+      To: 'mn.acunab@gmail.com',
+      From: 'sorteoloco@gmail.com',
+      Subject: 'Sorteo de SecretSanta',
+      Body: 'SE ENVIO EL SORTEO',
+    }).then(
+      console.log('SE ENVIO')
+      )
   }
 
 }
