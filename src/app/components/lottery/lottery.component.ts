@@ -93,6 +93,17 @@ export class LotteryComponent implements OnInit {
     let index: number;
     console.log(playersTemp);
     for(var player of lottery.players) {
+      const valueArr = lottery.players.map( item => item.email);
+      let isDuplicate = valueArr.some((item, index) => {
+        return valueArr.indexOf(item) != index;
+      })
+      if(isDuplicate) {
+        Swal.fire({
+          title: 'No puede ingresar el mismo email para diferentes participantes',
+          icon: 'warning'
+        })
+        return;
+      }
       do {
         index = Math.floor(Math.random() * (playersTemp.length));
         console.log(`El index generado es: ${ index }`)
