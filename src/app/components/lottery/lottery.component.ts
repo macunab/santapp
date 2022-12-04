@@ -65,7 +65,7 @@ export class LotteryComponent implements OnInit {
       console.log('the form is invalid');
       if(this.players.length < 2){
         Swal.fire({
-          title: 'Please add at least 2 players',
+          title: 'Ingrese por lo menos 2 participantes',
           icon: 'error'
         })
       }
