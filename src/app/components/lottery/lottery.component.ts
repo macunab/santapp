@@ -1,23 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Lottery, LotteryResult, Player } from 'src/app/interfaces/interfaces';
 import Swal from 'sweetalert2';
-import './../../../assets/js/smtp.js'
+import { LotteryService } from '../../services/lottery.service';
+
 declare let Email: any;
-
-interface Player {
-  name: string;
-  email: string;
-}
-
-interface Lottery {
-  title: string;
-  players: Array<Player>;
-}
-
-interface LotteryResult {
-  santa: Player;
-  name: string;
-}
 
 @Component({
   selector: 'app-lottery',
@@ -29,7 +16,7 @@ export class LotteryComponent implements OnInit {
   lotteryForm: FormGroup;
   loading: boolean = false;
 
-  constructor(private fb:FormBuilder) { 
+  constructor(private fb:FormBuilder, private lotteryService: LotteryService) { 
     this.lotteryForm = this.fb.group({
       title: ['', [Validators.required]],
       players: this.fb.array([this.createPlayers()])
@@ -76,7 +63,37 @@ export class LotteryComponent implements OnInit {
   }
 
   sendEmails(lottery: Lottery): void {
-    const playersTemp: Array<Player> = [ ...lottery.players];
+    const valueArr = lottery.players.map( item => item.email);
+    let hasDuplicates = valueArr.some((item, index) => {
+      return valueArr.indexOf(item) != index;
+    })
+    if(hasDuplicates) {
+      Swal.fire({
+        title: 'Asegurese que los participantes cuenten con emails diferentes.',
+        icon: 'warning'
+      })
+      return;
+    }
+    try {
+      this.lotteryService.makeLottery(lottery)
+        .subscribe( res => {
+          if(res) {
+            this.lotteryForm.reset();
+            this.players.clear();
+            this.addPlayer();
+            Swal.fire({
+              title: 'El sorteo se ha realizado con exito',
+              icon: 'success'
+            });
+          }
+        });
+    } catch(error) {
+      Swal.fire({
+        title: 'Ha ocurrido un error al intentar enviar los resultados del sorteo.',
+        icon: 'warning'
+      })
+    }
+    /*const playersTemp: Array<Player> = [ ...lottery.players];
     let secretResult: Array<LotteryResult> = [];
     let index: number;
     for(var player of lottery.players) {
@@ -106,14 +123,6 @@ export class LotteryComponent implements OnInit {
         console.log('SE ENVIO TEMP probar con https githubpages')
         )
         playersTemp.splice(index, 1);
-    }
-    this.lotteryForm.reset();
-    this.players.clear();
-    this.addPlayer();
-    Swal.fire({
-      title: 'El sorteo se ha realizado con exito',
-      icon: 'success'
-    })
+    }*/
   }
-
 }

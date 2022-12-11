@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  secureToken: '7e8b1e24-50a7-417e-a2d5-bcf702f6a164'
+  secureToken: '7e8b1e24-50a7-417e-a2d5-bcf702f6a164',
+  baseUrl: 'http://localhost:4000/api'
 };
 
 /*
