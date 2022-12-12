@@ -1,15 +1,15 @@
-export interface Player {
+export interface Participant {
     name: string;
     email: string;
   }
   
 export interface Lottery {
     title: string;
-    players: Array<Player>;
+    participants: Array<Participant>;
   }
   
 export interface LotteryResult {
-    santa: Player;
+    santa: Participant;
     name: string;
   }
 

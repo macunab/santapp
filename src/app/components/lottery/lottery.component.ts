@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Lottery, LotteryResult, Player } from 'src/app/interfaces/interfaces';
+import { Lottery } from 'src/app/interfaces/interfaces';
 import Swal from 'sweetalert2';
 import { LotteryService } from '../../services/lottery.service';
-
-declare let Email: any;
 
 @Component({
   selector: 'app-lottery',
@@ -19,38 +17,38 @@ export class LotteryComponent implements OnInit {
   constructor(private fb:FormBuilder, private lotteryService: LotteryService) { 
     this.lotteryForm = this.fb.group({
       title: ['', [Validators.required]],
-      players: this.fb.array([this.createPlayers()])
+      participants: this.fb.array([this.createParticipants()])
     });
   }
 
   ngOnInit(): void {
   }
 
-  createPlayers(): FormGroup {
+  createParticipants(): FormGroup {
     return this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]]
     });
   }
 
-  get players(): FormArray {
-    return <FormArray>this.lotteryForm.get('players');
+  get participants(): FormArray {
+    return <FormArray>this.lotteryForm.get('participants');
   }
 
   addPlayer(): void {
-    this.players.push(this.createPlayers());
+    this.participants.push(this.createParticipants());
   }
 
   onDeletePlayer(itemIndex: number): void {
     console.log(itemIndex);
-    this.players.removeAt(itemIndex);
+    this.participants.removeAt(itemIndex);
   }
 
   onSave() {
     
-    if(this.lotteryForm.invalid || this.players.length < 2) {
+    if(this.lotteryForm.invalid || this.participants.length < 2) {
       console.log('the form is invalid');
-      if(this.players.length < 2){
+      if(this.participants.length < 2){
         Swal.fire({
           title: 'Ingrese por lo menos 2 participantes',
           icon: 'error'
@@ -63,7 +61,7 @@ export class LotteryComponent implements OnInit {
   }
 
   sendEmails(lottery: Lottery): void {
-    const valueArr = lottery.players.map( item => item.email);
+    const valueArr = lottery.participants.map( item => item.email);
     let hasDuplicates = valueArr.some((item, index) => {
       return valueArr.indexOf(item) != index;
     })
@@ -79,7 +77,7 @@ export class LotteryComponent implements OnInit {
         .subscribe( res => {
           if(res) {
             this.lotteryForm.reset();
-            this.players.clear();
+            this.participants.clear();
             this.addPlayer();
             Swal.fire({
               title: 'El sorteo se ha realizado con exito',

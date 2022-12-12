@@ -16,7 +16,7 @@ export class LotteryService {
 
   makeLottery(lottery: Lottery) {
     const url: string = `${this.baseUrl}/send`;
-    return this.http.get<ServerResponse>(url)
+    return this.http.post<ServerResponse>(url, lottery)
       .pipe(
         map( res => res.ok ),
         catchError( error => {
