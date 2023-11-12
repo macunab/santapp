@@ -47,7 +47,6 @@ export class LotteryComponent implements OnInit {
   onSave() {
     
     if(this.lotteryForm.invalid || this.participants.length < 2) {
-      console.log('the form is invalid');
       if(this.participants.length < 2){
         Swal.fire({
           title: 'Ingrese por lo menos 2 participantes',
